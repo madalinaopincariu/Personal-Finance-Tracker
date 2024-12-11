@@ -254,16 +254,26 @@ class FinanceApp:
     # Add a new sort form
     def show_sort_form(self, entity):
         key = simpledialog.askstring("Input", f"Enter attribute to sort {entity} by:")
+        reverse_input = simpledialog.askstring("Input", "Sort in descending order? (yes/no):").lower()
+        
+        if reverse_input == "yes":
+            reverse = True
+        elif reverse_input == "no":
+            reverse = False
+        else:
+            messagebox.showwarning("Invalid Input", "Please enter 'yes' or 'no' to specify the sorting order.")
+            return
+
         if key:
             if entity.lower() == "income":
-                sorted_data = self.data_service.sort_incomes(key)
-                self.display_sorted_data("Income", ["ID", "Source", "Amount", "Date", "Description"], sorted_data)
+                sorted_data = self.data_service.sort_incomes(key, reverse)
+                self.display_filtered_data("Income", ["ID", "Source", "Amount", "Date", "Description"], sorted_data)
             elif entity.lower() == "expense":
-                sorted_data = self.data_service.sort_expenses(key)
-                self.display_sorted_data("Expense", ["ID", "Category", "Amount", "Date", "Description"], sorted_data)
+                sorted_data = self.data_service.sort_expenses(key, reverse)
+                self.display_filtered_data("Expense", ["ID", "Category", "Amount", "Date", "Description"], sorted_data)
             elif entity.lower() == "budget":
-                sorted_data = self.data_service.sort_budgets(key)
-                self.display_sorted_data("Budget", ["ID", "Category", "Amount"], sorted_data)
+                sorted_data = self.data_service.sort_budgets(key, reverse)
+                self.display_filtered_data("Budget", ["ID", "Category", "Amount"], sorted_data)
 
     # Helper method to display filtered data
     def display_filtered_data(self, entity, headers, data):
