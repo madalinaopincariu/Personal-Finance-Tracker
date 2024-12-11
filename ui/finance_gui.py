@@ -26,27 +26,72 @@ class FinanceApp:
         self.budget_tab = tk.Button(self.tabs, text="Budgets", command=self.show_budgets)
         self.budget_tab.grid(row=0, column=2)
 
+        # Create frames for displaying buttons (Sort, Filter, Search) for each tab
+        self.income_buttons_frame = tk.Frame(self.root)
+        self.expense_buttons_frame = tk.Frame(self.root)
+        self.budget_buttons_frame = tk.Frame(self.root)
+
+        # Create button frames for sorting, filtering, and searching
+        self.add_sort_filter_search_buttons()
+
         # Create table for displaying data
         self.table = tk.Frame(self.root)
         self.table.pack()
-
-        # Show Incomes by default
-        self.show_incomes()
 
         # Add button for adding records
         self.add_button = tk.Button(self.root, text="Add", command=self.show_add_form)
         self.add_button.pack(side=tk.LEFT, padx=10)
 
+        # Show Incomes by default
+        self.show_incomes()
+
+    def add_sort_filter_search_buttons(self):
+        # Buttons for Incomes
+        self.income_sort_button = tk.Button(self.income_buttons_frame, text="Sort Incomes", command=lambda: self.show_sort_form("income"))
+        self.income_sort_button.pack(side=tk.LEFT, padx=10)
+
+        self.income_filter_button = tk.Button(self.income_buttons_frame, text="Filter Incomes", command=lambda: self.show_filter_form("income"))
+        self.income_filter_button.pack(side=tk.LEFT, padx=10)
+
+        self.income_search_button = tk.Button(self.income_buttons_frame, text="Search Incomes", command=lambda: self.show_search_form("income"))
+        self.income_search_button.pack(side=tk.LEFT, padx=10)
+
+        # Buttons for Expenses
+        self.expense_sort_button = tk.Button(self.expense_buttons_frame, text="Sort Expenses", command=lambda: self.show_sort_form("expense"))
+        self.expense_sort_button.pack(side=tk.LEFT, padx=10)
+
+        self.expense_filter_button = tk.Button(self.expense_buttons_frame, text="Filter Expenses", command=lambda: self.show_filter_form("expense"))
+        self.expense_filter_button.pack(side=tk.LEFT, padx=10)
+
+        self.expense_search_button = tk.Button(self.expense_buttons_frame, text="Search Expenses", command=lambda: self.show_search_form("expense"))
+        self.expense_search_button.pack(side=tk.LEFT, padx=10)
+
+        # Buttons for Budgets
+        self.budget_sort_button = tk.Button(self.budget_buttons_frame, text="Sort Budgets", command=lambda: self.show_sort_form("budget"))
+        self.budget_sort_button.pack(side=tk.LEFT, padx=10)
+
+        self.budget_filter_button = tk.Button(self.budget_buttons_frame, text="Filter Budgets", command=lambda: self.show_filter_form("budget"))
+        self.budget_filter_button.pack(side=tk.LEFT, padx=10)
+
+        self.budget_search_button = tk.Button(self.budget_buttons_frame, text="Search Budgets", command=lambda: self.show_search_form("budget"))
+        self.budget_search_button.pack(side=tk.LEFT, padx=10)
+
     def show_incomes(self):
         self.clear_table()
+        self.hide_all_buttons()
+        self.show_incomes_buttons()
         self.show_table("Income", ["ID", "Source", "Amount", "Date", "Description"], self.data_service.get_incomes(), self.delete_income)
 
     def show_expenses(self):
         self.clear_table()
+        self.hide_all_buttons()
+        self.show_expenses_buttons()
         self.show_table("Expense", ["ID", "Category", "Amount", "Date", "Description"], self.data_service.get_expenses(), self.delete_expense)
 
     def show_budgets(self):
         self.clear_table()
+        self.hide_all_buttons()
+        self.show_budgets_buttons()
         self.show_table("Budget", ["ID", "Category", "Amount"], self.data_service.get_budgets(), self.delete_budget)
 
     def show_table(self, entity, headers, data, delete_action):
@@ -75,6 +120,21 @@ class FinanceApp:
     def clear_table(self):
         for widget in self.table.winfo_children():
             widget.destroy()
+
+    def hide_all_buttons(self):
+        # Hide all button frames
+        self.income_buttons_frame.pack_forget()
+        self.expense_buttons_frame.pack_forget()
+        self.budget_buttons_frame.pack_forget()
+
+    def show_incomes_buttons(self):
+        self.income_buttons_frame.pack()
+
+    def show_expenses_buttons(self):
+        self.expense_buttons_frame.pack()
+
+    def show_budgets_buttons(self):
+        self.budget_buttons_frame.pack()
 
     def delete_income(self, income_id):
         self.data_service.delete_income(income_id)
@@ -160,3 +220,57 @@ class FinanceApp:
             category = simpledialog.askstring("Input", f"Enter new category (current: {item.category}):")
             amount = simpledialog.askfloat("Input", f"Enter new amount (current: {item.amount}):")
             self.update_budget(item.id, category, amount)
+
+    # Add a new filter form
+    def show_filter_form(self, entity):
+        key = simpledialog.askstring("Input", f"Enter attribute to filter {entity} by:")
+        value = simpledialog.askstring("Input", f"Enter value for {key}:")
+        if key and value:
+            if entity.lower() == "income":
+                filtered_data = self.data_service.filter_incomes(key, value)
+                self.display_filtered_data("Income", ["ID", "Source", "Amount", "Date", "Description"], filtered_data)
+            elif entity.lower() == "expense":
+                filtered_data = self.data_service.filter_expenses(key, value)
+                self.display_filtered_data("Expense", ["ID", "Category", "Amount", "Date", "Description"], filtered_data)
+            elif entity.lower() == "budget":
+                filtered_data = self.data_service.filter_budgets(key, value)
+                self.display_filtered_data("Budget", ["ID", "Category", "Amount"], filtered_data)
+
+    # Add a new search form
+    def show_search_form(self, entity):
+        key = simpledialog.askstring("Input", f"Enter attribute to search {entity} by:")
+        query = simpledialog.askstring("Input", f"Enter query for {key}:")
+        if key and query:
+            if entity.lower() == "income":
+                search_results = self.data_service.search_incomes(key, query)
+                self.display_filtered_data("Income", ["ID", "Source", "Amount", "Date", "Description"], search_results)
+            elif entity.lower() == "expense":
+                search_results = self.data_service.search_expenses(key, query)
+                self.display_filtered_data("Expense", ["ID", "Category", "Amount", "Date", "Description"], search_results)
+            elif entity.lower() == "budget":
+                search_results = self.data_service.search_budgets(key, query)
+                self.display_filtered_data("Budget", ["ID", "Category", "Amount"], search_results)
+
+    # Add a new sort form
+    def show_sort_form(self, entity):
+        key = simpledialog.askstring("Input", f"Enter attribute to sort {entity} by:")
+        if key:
+            if entity.lower() == "income":
+                sorted_data = self.data_service.sort_incomes(key)
+                self.display_sorted_data("Income", ["ID", "Source", "Amount", "Date", "Description"], sorted_data)
+            elif entity.lower() == "expense":
+                sorted_data = self.data_service.sort_expenses(key)
+                self.display_sorted_data("Expense", ["ID", "Category", "Amount", "Date", "Description"], sorted_data)
+            elif entity.lower() == "budget":
+                sorted_data = self.data_service.sort_budgets(key)
+                self.display_sorted_data("Budget", ["ID", "Category", "Amount"], sorted_data)
+
+    # Helper method to display filtered data
+    def display_filtered_data(self, entity, headers, data):
+        self.clear_table()
+        self.show_table(entity, headers, data, self.delete_income if entity == "Income" else self.delete_expense if entity == "Expense" else self.delete_budget)
+
+    # Helper method to display sorted data
+    def display_sorted_data(self, entity, headers, data):
+        self.clear_table()
+        self.show_table(entity, headers, data, self.delete_income if entity == "Income" else self.delete_expense if entity == "Expense" else self.delete_budget)

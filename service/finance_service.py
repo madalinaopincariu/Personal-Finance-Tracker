@@ -57,3 +57,33 @@ class DataService:
         if not data_list:
             return 1
         return max(item.id for item in data_list) + 1
+    
+        # Filtering by attribute
+    def filter_incomes(self, key, value):
+        return [income for income in self.get_incomes() if getattr(income, key) == value]
+
+    def filter_expenses(self, key, value):
+        return [expense for expense in self.get_expenses() if getattr(expense, key) == value]
+
+    def filter_budgets(self, key, value):
+        return [budget for budget in self.get_budgets() if getattr(budget, key) == value]
+
+    # Searching by attribute
+    def search_incomes(self, key, query):
+        return [income for income in self.get_incomes() if query.lower() in str(getattr(income, key)).lower()]
+
+    def search_expenses(self, key, query):
+        return [expense for expense in self.get_expenses() if query.lower() in str(getattr(expense, key)).lower()]
+
+    def search_budgets(self, key, query):
+        return [budget for budget in self.get_budgets() if query.lower() in str(getattr(budget, key)).lower()]
+
+    # Sorting by attribute
+    def sort_incomes(self, key, reverse=False):
+        return sorted(self.get_incomes(), key=lambda income: getattr(income, key), reverse=reverse)
+
+    def sort_expenses(self, key, reverse=False):
+        return sorted(self.get_expenses(), key=lambda expense: getattr(expense, key), reverse=reverse)
+
+    def sort_budgets(self, key, reverse=False):
+        return sorted(self.get_budgets(), key=lambda budget: getattr(budget, key), reverse=reverse)
