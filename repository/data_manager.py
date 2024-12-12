@@ -2,6 +2,7 @@ import csv
 from domain.income import Income
 from domain.expense import Expense
 from domain.budget import Budget
+from datetime import datetime 
 
 class DataManager:
     def __init__(self):
@@ -18,7 +19,8 @@ class DataManager:
                 next(reader)  # Skip header
                 for row in reader:
                     if row:
-                        incomes.append(Income(int(row[0]), row[1], float(row[2]), row[3], row[4]))
+                        date_obj = datetime.strptime(row[3], '%Y-%m-%d') if row[3] else None
+                        incomes.append(Income(int(row[0]), row[1], float(row[2]), date_obj, row[4]))
         except FileNotFoundError:
             print(f"{self.income_file} not found.")
         return incomes
@@ -31,7 +33,8 @@ class DataManager:
                 next(reader)  # Skip header
                 for row in reader:
                     if row:
-                        expenses.append(Expense(int(row[0]), row[1], float(row[2]), row[3], row[4]))
+                        date_obj = datetime.strptime(row[3], '%Y-%m-%d') if row[3] else None
+                        expenses.append(Expense(int(row[0]), row[1], float(row[2]), date_obj, row[4]))
         except FileNotFoundError:
             print(f"{self.expense_file} not found.")
         return expenses

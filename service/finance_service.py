@@ -2,6 +2,7 @@ from repository.data_manager import DataManager
 from domain.income import Income
 from domain.expense import Expense
 from domain.budget import Budget
+from datetime import datetime
 
 class DataService:
     def __init__(self):
@@ -87,3 +88,31 @@ class DataService:
 
     def sort_budgets(self, key, reverse=False):
         return sorted(self.get_budgets(), key=lambda budget: getattr(budget, key), reverse=reverse)
+    
+    def generate_monthly_report(self, year, month):
+        incomes = self.get_incomes()
+        expenses = self.get_expenses()
+
+        # Filtrare venituri și cheltuieli pentru luna specificată
+        monthly_incomes = [income for income in incomes if self._is_in_month(income.date, month, year)]
+        monthly_expenses = [expense for expense in expenses if self._is_in_month(expense.date, month, year)]
+
+        total_income = sum(income.amount for income in monthly_incomes)
+        total_expense = sum(expense.amount for expense in monthly_expenses)
+        savings = total_income - total_expense
+
+        return {
+            "total_income": total_income,
+            "total_expense": total_expense,
+            "savings": savings,
+            "month": month,
+            "year": year
+        }
+
+    def _is_in_month(self, date_obj, month, year):
+        if date_obj is None:
+            print("Date is None")
+            return False
+ 
+        print(f"Checking date: {date_obj}, month: {month}, year: {year}")
+        return date_obj.year == year and date_obj.month == month

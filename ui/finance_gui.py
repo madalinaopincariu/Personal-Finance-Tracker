@@ -4,6 +4,7 @@ from service.finance_service import DataService
 from domain.income import Income
 from domain.expense import Expense
 from domain.budget import Budget
+import matplotlib.pyplot as plt
 
 class FinanceApp:
     def __init__(self, root):
@@ -44,6 +45,9 @@ class FinanceApp:
 
         # Show Incomes by default
         self.show_incomes()
+
+        self.report_button = tk.Button(self.root, text="Generate Report", command=self.show_report_form)
+        self.report_button.pack(side=tk.LEFT, padx=10)
 
     def add_sort_filter_search_buttons(self):
         # Buttons for Incomes
@@ -284,3 +288,33 @@ class FinanceApp:
     def display_sorted_data(self, entity, headers, data):
         self.clear_table()
         self.show_table(entity, headers, data, self.delete_income if entity == "Income" else self.delete_expense if entity == "Expense" else self.delete_budget)
+
+    def show_report_form(self):
+        year = simpledialog.askinteger("Input", "Enter year:")
+        month = simpledialog.askinteger("Input", "Enter month (1-12):")
+        if year and month:
+            report = self.data_service.generate_monthly_report(year, month)
+            self.show_report(report)
+
+    def show_report(self, report):
+        # Afișare în terminal
+        report_text = (
+            f"Report for {report['month']}/{report['year']}:\n"
+            f"Total Income: {report['total_income']}\n"
+            f"Total Expenses: {report['total_expense']}\n"
+            f"Savings: {report['savings']}"
+        )
+        messagebox.showinfo("Monthly Report", report_text)
+
+        # Vizualizare grafică
+        self.plot_report(report)
+
+    def plot_report(self, report):
+        labels = ["Total Income", "Total Expenses", "Savings"]
+        values = [report["total_income"], report["total_expense"], report["savings"]]
+
+        plt.figure(figsize=(8, 6))
+        plt.bar(labels, values, color=["green", "red", "blue"])
+        plt.title(f"Financial Report for {report['month']}/{report['year']}")
+        plt.ylabel("Amount")
+        plt.show()
