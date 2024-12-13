@@ -49,6 +49,9 @@ class FinanceApp:
         self.report_button = tk.Button(self.root, text="Generate Report", command=self.show_report_form)
         self.report_button.pack(side=tk.LEFT, padx=10)
 
+        self.notifications_button = tk.Button(self.root, text="Check Notifications", command=self.show_notifications)
+        self.notifications_button.pack(side=tk.LEFT, padx=10)
+
     def add_sort_filter_search_buttons(self):
         # Buttons for Incomes
         self.income_sort_button = tk.Button(self.income_buttons_frame, text="Sort Incomes", command=lambda: self.show_sort_form("income"))
@@ -159,11 +162,13 @@ class FinanceApp:
         self.data_service.create_income(source, amount, date, description)
         messagebox.showinfo("Success", "Income added successfully.")
         self.show_incomes()
+        self.show_notifications()
 
     def add_expense(self, category, amount, date, description):
         self.data_service.create_expense(category, amount, date, description)
         messagebox.showinfo("Success", "Expense added successfully.")
         self.show_expenses()
+        self.show_notifications()
 
     def add_budget(self, category, amount):
         self.data_service.create_budget(category, amount)
@@ -174,11 +179,13 @@ class FinanceApp:
         self.data_service.update_income(income_id, source, amount, date, description)
         messagebox.showinfo("Success", "Income updated successfully.")
         self.show_incomes()
+        self.show_notifications()
 
     def update_expense(self, expense_id, category, amount, date, description):
         self.data_service.update_expense(expense_id, category, amount, date, description)
         messagebox.showinfo("Success", "Expense updated successfully.")
         self.show_expenses()
+        self.show_notifications()
 
     def update_budget(self, budget_id, category, amount):
         self.data_service.update_budget(budget_id, category, amount)
@@ -318,3 +325,13 @@ class FinanceApp:
         plt.title(f"Financial Report for {report['month']}/{report['year']}")
         plt.ylabel("Amount")
         plt.show()
+
+    def show_notifications(self):
+        notifications = []
+        notifications.extend(self.data_service.check_budget_exceed())
+        notifications.extend(self.data_service.detect_unusual_expenses())
+
+        if notifications:
+            messagebox.showinfo("Notifications", "\n".join(notifications))
+        else:
+            messagebox.showinfo("Notifications", "No alerts or unusual expenses.")

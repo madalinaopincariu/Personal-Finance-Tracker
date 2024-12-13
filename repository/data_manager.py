@@ -19,7 +19,7 @@ class DataManager:
                 next(reader)  # Skip header
                 for row in reader:
                     if row:
-                        date_obj = datetime.strptime(row[3], '%Y-%m-%d') if row[3] else None
+                        date_obj = datetime.strptime(row[3], '%Y-%m-%d').date() if row[3] else None
                         incomes.append(Income(int(row[0]), row[1], float(row[2]), date_obj, row[4]))
         except FileNotFoundError:
             print(f"{self.income_file} not found.")
@@ -33,7 +33,7 @@ class DataManager:
                 next(reader)  # Skip header
                 for row in reader:
                     if row:
-                        date_obj = datetime.strptime(row[3], '%Y-%m-%d') if row[3] else None
+                        date_obj = datetime.strptime(row[3], '%Y-%m-%d').date() if row[3] else None
                         expenses.append(Expense(int(row[0]), row[1], float(row[2]), date_obj, row[4]))
         except FileNotFoundError:
             print(f"{self.expense_file} not found.")

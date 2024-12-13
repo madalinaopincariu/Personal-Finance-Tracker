@@ -3,3 +3,5 @@ id,category,amount,date,description
 2,Transport,50.0,2024-12-10,Bus fare
 3,Entertainment,30.0,2024-12-12,Movie ticket
 21,food,10.0,2024-12-10,a
+22,Transport,5.0,2024-12-13,aa
+23,Transport,90.0,2024-12-12,cwbcic

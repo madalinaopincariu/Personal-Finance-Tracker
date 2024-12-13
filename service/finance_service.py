@@ -116,3 +116,54 @@ class DataService:
  
         print(f"Checking date: {date_obj}, month: {month}, year: {year}")
         return date_obj.year == year and date_obj.month == month
+
+    def check_budget_exceed(self):
+        budgets = self.get_budgets()
+        expenses = self.get_expenses()
+        notifications = []
+
+        budget_dict = {budget.category: budget.amount for budget in budgets}
+        category_totals = {}
+
+    # Calculează totalul cheltuielilor pe fiecare categorie
+        for expense in expenses:
+            if expense.category not in category_totals:
+                category_totals[expense.category] = 0
+            category_totals[expense.category] += expense.amount
+
+    # Verifică dacă totalul cheltuielilor depășește bugetul alocat
+        for category, total in category_totals.items():
+            if category in budget_dict:
+                budget = budget_dict[category]
+                if total > budget:  # Verifică dacă cheltuielile depășesc complet bugetul
+                    notifications.append(f"Alert: You have exceeded the budget in category '{category}'.")
+
+        return notifications
+
+    def detect_unusual_expenses(self):
+        expenses = self.get_expenses()
+        category_totals = {}
+
+    # Obține bugetele din funcția ta de obținere a bugetelor
+        budgets = self.get_budgets()
+
+    # Creează un dicționar cu totalul cheltuielilor pe fiecare categorie
+        for expense in expenses:
+            if expense.category not in category_totals:
+                category_totals[expense.category] = 0
+            category_totals[expense.category] += expense.amount
+
+    # Creează un dicționar cu bugetele pe fiecare categorie
+        budget_dict = {budget.category: budget.amount for budget in budgets}
+
+    # Detectează depășirea a 90% din buget și adaugă notificări
+        notifications = []
+
+        for category, total in category_totals.items():
+        # Verifică dacă s-a cheltuit 90% sau mai mult din bugetul alocat pentru categoria respectivă
+            if category in budget_dict:
+                budget = budget_dict[category]
+                if budget > 0 and total >= budget * 0.9 and total < budget:  # 90% din buget
+                    notifications.append(f"Warning: You have spent 90% or more of your budget in the '{category}' category.")
+
+        return notifications
