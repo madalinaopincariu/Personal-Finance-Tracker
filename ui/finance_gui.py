@@ -159,38 +159,80 @@ class FinanceApp:
         self.show_budgets()
 
     def add_income(self, source, amount, date, description):
-        self.data_service.create_income(source, amount, date, description)
-        messagebox.showinfo("Success", "Income added successfully.")
-        self.show_incomes()
-        self.show_notifications()
+        try:
+            # Apelăm funcția de creare income, care poate arunca o eroare
+            self.data_service.create_income(source, amount, date, description)
+            # Dacă nu apare nicio eroare, afișăm mesajul de succes
+            messagebox.showinfo("Success", "Income added successfully.")
+            self.show_incomes()  # Actualizează lista de venituri
+            self.show_notifications()
+        except ValueError as e:
+            # Dacă apare o eroare de validare, afișăm mesajul de eroare și oprim procesul
+            messagebox.showerror("Validation Error", str(e))
+            return  # Opresc procesul dacă există eroare
 
     def add_expense(self, category, amount, date, description):
-        self.data_service.create_expense(category, amount, date, description)
-        messagebox.showinfo("Success", "Expense added successfully.")
-        self.show_expenses()
-        self.show_notifications()
+        try:
+            # Apelăm funcția de creare expense, care poate arunca o eroare
+            self.data_service.create_expense(category, amount, date, description)
+            # Dacă nu apare nicio eroare, afișăm mesajul de succes
+            messagebox.showinfo("Success", "Expense added successfully.")
+            self.show_expenses()  # Actualizează lista de cheltuieli
+            self.show_notifications()  # Actualizează notificările
+        except ValueError as e:
+            # Dacă apare o eroare de validare, afișăm mesajul de eroare și oprim procesul
+            messagebox.showerror("Validation Error", str(e))
+            return  # Opresc procesul dacă există eroare
 
     def add_budget(self, category, amount):
-        self.data_service.create_budget(category, amount)
-        messagebox.showinfo("Success", "Budget added successfully.")
-        self.show_budgets()
+        try:
+            # Apelăm funcția de creare budget, care poate arunca o eroare
+            self.data_service.create_budget(category, amount)
+            # Dacă nu apare nicio eroare, afișăm mesajul de succes
+            messagebox.showinfo("Success", "Budget added successfully.")
+            self.show_budgets()  # Actualizează lista de bugete
+        except ValueError as e:
+            # Dacă apare o eroare de validare, afișăm mesajul de eroare și oprim procesul
+            messagebox.showerror("Validation Error", str(e))
+            return  # Opresc procesul dacă există eroare
 
     def update_income(self, income_id, source, amount, date, description):
-        self.data_service.update_income(income_id, source, amount, date, description)
-        messagebox.showinfo("Success", "Income updated successfully.")
-        self.show_incomes()
-        self.show_notifications()
+        try:
+            # Apelăm funcția de actualizare income, care poate arunca o eroare
+            self.data_service.update_income(income_id, source, amount, date, description)
+            # Dacă nu apare nicio eroare, afișăm mesajul de succes
+            messagebox.showinfo("Success", "Income updated successfully.")
+            self.show_incomes()  # Actualizează lista de venituri
+            self.show_notifications()
+        except ValueError as e:
+            # Dacă apare o eroare de validare, afișăm mesajul de eroare și oprim procesul
+            messagebox.showerror("Validation Error", str(e))
+            return  # Opresc procesul dacă există eroare
 
     def update_expense(self, expense_id, category, amount, date, description):
-        self.data_service.update_expense(expense_id, category, amount, date, description)
-        messagebox.showinfo("Success", "Expense updated successfully.")
-        self.show_expenses()
-        self.show_notifications()
+        try:
+            # Apelăm funcția de actualizare expense, care poate arunca o eroare
+            self.data_service.update_expense(expense_id, category, amount, date, description)
+            # Dacă nu apare nicio eroare, afișăm mesajul de succes
+            messagebox.showinfo("Success", "Expense updated successfully.")
+            self.show_expenses()  # Actualizează lista de cheltuieli
+            self.show_notifications()  # Actualizează notificările
+        except ValueError as e:
+            # Dacă apare o eroare de validare, afișăm mesajul de eroare și oprim procesul
+            messagebox.showerror("Validation Error", str(e))
+            return  # Opresc procesul dacă există eroare
 
     def update_budget(self, budget_id, category, amount):
-        self.data_service.update_budget(budget_id, category, amount)
-        messagebox.showinfo("Success", "Budget updated successfully.")
-        self.show_budgets()
+        try:
+            # Apelăm funcția de actualizare budget, care poate arunca o eroare
+            self.data_service.update_budget(budget_id, category, amount)
+            # Dacă nu apare nicio eroare, afișăm mesajul de succes
+            messagebox.showinfo("Success", "Budget updated successfully.")
+            self.show_budgets()  # Actualizează lista de bugete
+        except ValueError as e:
+            # Dacă apare o eroare de validare, afișăm mesajul de eroare și oprim procesul
+            messagebox.showerror("Validation Error", str(e))
+            return  # Opresc procesul dacă există eroare
 
     def show_add_form(self):
         entity = simpledialog.askstring("Input", "Which entity would you like to add (Income, Expense, Budget)?")

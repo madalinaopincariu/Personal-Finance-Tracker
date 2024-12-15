@@ -3,19 +3,69 @@ from domain.income import Income
 from domain.expense import Expense
 from domain.budget import Budget
 from datetime import datetime
+import tkinter.messagebox as MessageBox
 
 class DataService:
     def __init__(self):
         self.data_manager = DataManager()
+    
+    def _validate_positive_float(self, value):
+        if not isinstance(value, (float, int)) or value <= 0:
+            raise ValueError("Amount must be a positive number.")
+
+    def _validate_date(self, date):
+        try:
+            date_obj = datetime.strptime(date, "%Y-%m-%d")
+            if date_obj > datetime.today():
+                raise ValueError("Date cannot be in the future.")
+        except ValueError:
+            raise ValueError("Invalid date format. Use YYYY-MM-DD.")
+
+    def _show_error(self, message):
+        MessageBox.showerror("Validation Error", message)
+
+    def create_income(self, source, amount, date, description):
+        self._validate_positive_float(amount)
+        self._validate_date(date)
+        income = Income(self._generate_id(self.data_manager.load_incomes()), source, amount, date, description)
+        self.data_manager.create_income(income)
+
+    def update_income(self, income_id, source, amount, date, description):
+        self._validate_positive_float(amount)
+        self._validate_date(date)
+        updated_income = Income(income_id, source, amount, date, description)
+        self.data_manager.update_income(income_id, updated_income)
+
+    def create_expense(self, category, amount, date, description):
+        self._validate_positive_float(amount)
+        self._validate_date(date)
+        expense = Expense(self._generate_id(self.data_manager.load_expenses()), category, amount, date, description)
+        self.data_manager.create_expense(expense)
+
+    def update_expense(self, expense_id, category, amount, date, description):
+        self._validate_positive_float(amount)
+        self._validate_date(date)
+        updated_expense = Expense(expense_id, category, amount, date, description)
+        self.data_manager.update_expense(expense_id, updated_expense)
+
+    def create_budget(self, category, amount):
+        self._validate_positive_float(amount)
+        budget = Budget(self._generate_id(self.data_manager.load_budgets()), category, amount)
+        self.data_manager.create_budget(budget)
+
+    def update_budget(self, budget_id, category, amount):
+        self._validate_positive_float(amount)
+        updated_budget = Budget(budget_id, category, amount)
+        self.data_manager.update_budget(budget_id, updated_budget)
 
     # Income CRUD
-    def create_income(self, source, amount, date, description):
+    """def create_income(self, source, amount, date, description):
         income = Income(self._generate_id(self.data_manager.load_incomes()), source, amount, date, description)
         self.data_manager.create_income(income)
 
     def update_income(self, income_id, source, amount, date, description):
         updated_income = Income(income_id, source, amount, date, description)
-        self.data_manager.update_income(income_id, updated_income)
+        self.data_manager.update_income(income_id, updated_income)"""
 
     def delete_income(self, income_id):
         self.data_manager.delete_income(income_id)
@@ -24,13 +74,13 @@ class DataService:
         return self.data_manager.load_incomes()
 
     # Expense CRUD
-    def create_expense(self, category, amount, date, description):
+    """def create_expense(self, category, amount, date, description):
         expense = Expense(self._generate_id(self.data_manager.load_expenses()), category, amount, date, description)
         self.data_manager.create_expense(expense)
 
     def update_expense(self, expense_id, category, amount, date, description):
         updated_expense = Expense(expense_id, category, amount, date, description)
-        self.data_manager.update_expense(expense_id, updated_expense)
+        self.data_manager.update_expense(expense_id, updated_expense)"""
 
     def delete_expense(self, expense_id):
         self.data_manager.delete_expense(expense_id)
@@ -39,13 +89,13 @@ class DataService:
         return self.data_manager.load_expenses()
 
     # Budget CRUD
-    def create_budget(self, category, amount):
+    """def create_budget(self, category, amount):
         budget = Budget(self._generate_id(self.data_manager.load_budgets()), category, amount)
         self.data_manager.create_budget(budget)
 
     def update_budget(self, budget_id, category, amount):
         updated_budget = Budget(budget_id, category, amount)
-        self.data_manager.update_budget(budget_id, updated_budget)
+        self.data_manager.update_budget(budget_id, updated_budget)"""
 
     def delete_budget(self, budget_id):
         self.data_manager.delete_budget(budget_id)

@@ -1,5 +1,6 @@
 id,source,amount,date,description
 2,Salary,2000.0,2024-12-01,Monthly salary
 3,Freelance,500.0,2024-12-05,Freelance work
-4,Job,1500.0,2024-01-01,Salary
-5,ab,1.0,,
+4,Job,1000.0,2024-12-12,Salary
+5,H&M,100.0,2024-12-10,Daily worker
+6,job,200.0,2024-12-14,erv
